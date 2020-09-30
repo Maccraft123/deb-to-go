@@ -27,5 +27,6 @@ export ARCH=arm
 cd $DEBROOT/build
 git clone https://github.com/u-boot/u-boot.git uboot
 cd uboot
-make odroid-go2_defconfig
+cp $DEBROOT/res/uboot-config ./.config
+cp $DEBROOT/res/uboot-env ./
 make -j$(nproc)

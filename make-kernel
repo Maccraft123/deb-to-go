@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+
+DEBROOT=$(pwd)
+
+export ARCH=arm64
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+# make sure that we have build directory
+mkdir -p build
+cd build
+
+# let's have a clean tree
+rm -rf linux
+mkdir -p linux
+curl -L https://$(curl -sL https://www.kernel.org | grep "Download complete tarball" | cut -d '.' -f 2- | cut -d '"' -f 1 | grep pub | head -n1) -o linux.tar.xz
+tar -xJf linux.tar.xz --strip-components=1 -C linux
+cd linux
+cp $DEBROOT/res/linux-config ./.config
+make olddefconfig
+make -j$(nproc)
