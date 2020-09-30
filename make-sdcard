@@ -1,0 +1,24 @@
+#!/bin/bash
+
+TARGET=$1
+DEBROOT=$(pwd)
+
+if [ "$(id -u)" != "0" ]; then
+	echo "You gave to run this as root!"
+	exit 1
+fi
+
+[ -z "$1" ] && exit 1
+
+read -p "Are you sure $1 is correct device, press enter to continue"
+
+echo "Installing Das U-Boot..."
+
+cd build
+cd uboot
+
+dd if=idbloader.img of=$1 bs=512 seek=64 status=none
+dd if=u-boot.itb of=$1 bs=512 seek=512 status=none
+sync
+
+echo 'Done!'

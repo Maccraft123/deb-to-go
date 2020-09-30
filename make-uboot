@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -e
+
+DEBROOT=$(pwd)
+
+# envvars
+export CROSS_COMPILE=aarch64-linux-gnu-
+
+# make sure that we have build directory
+mkdir -p build
+cd build
+
+# let's have a clean tree
+rm -rf uboot
+rm -rf arm-trusted-firmware
+
+cd $DEBROOT/build
+git clone https://github.com/ARM-software/arm-trusted-firmware.git
+cd arm-trusted-firmware
+make PLAT=px30 DEBUG=1 bl31 -j$(nproc)
+
+
+export BL31=$DEBROOT/build/arm-trusted-firmware/build/px30/debug/bl31/bl31.elf
+export ARCH=arm
+
+cd $DEBROOT/build
+git clone https://github.com/u-boot/u-boot.git uboot
+cd uboot
+make odroid-go2_defconfig
+make -j$(nproc)
