@@ -4,7 +4,7 @@ TARGET=$1
 DEBROOT=$(pwd)
 
 if [ "$(id -u)" != "0" ]; then
-	echo "You gave to run this as root!"
+	echo "You have to run this as root!"
 	exit 1
 fi
 
@@ -22,8 +22,11 @@ sleep 2
 mkfs.ext4 /dev/sdc1
 
 mount /dev/sdc1 /mnt
+debootstrap --arch=arm64 sid /mnt http://deb.debian.org/debian/
+echo odroidgo2 > /mnt/etc/hostname
+cp $(which qemu-aarch64-static) /mnt/
+chroot /mnt/ /qemu-aarch64-static /bin/passwd -d root
 
-# TODO: qemu-debootstrap
 
 echo "Installing kernel and devicetree..."
 cp $DEBROOT/build/linux/arch/arm64/boot/Image /mnt/Image
