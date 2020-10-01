@@ -10,7 +10,5 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 # make sure that we have build directory
 cd build/linux
 
-make olddefconfig
 make nconfig
-cp $DEBROOT/res/linux-config $DEBROOT/res/linux-config.old
-cp .config $DEBROOT/res/linux-config
+make -j5
