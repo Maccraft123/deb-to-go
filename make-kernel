@@ -32,6 +32,6 @@ export KERNELRELEASE=$(make kernelversion)
 export SRC_DIR=$DEBROOT/build/esp8089/
 
 cd $DEBROOT/build/esp8089
-make -j$(nproc)
+#make -j$(nproc)
 
 
