@@ -12,11 +12,26 @@ mkdir -p build
 cd build
 
 # let's have a clean tree
+rm -rf esp8089
+git clone https://github.com/al177/esp8089.git
+
 rm -rf linux
 mkdir -p linux
 curl -L https://$(curl -sL https://www.kernel.org | grep "Download complete tarball" | cut -d '.' -f 2- | cut -d '"' -f 1 | grep pub | head -n1) -o linux.tar.xz
 tar -xJf linux.tar.xz --strip-components=1 -C linux
+
+# build
+
 cd linux
 cp $DEBROOT/res/linux-config ./.config
 make olddefconfig
 make -j$(nproc)
+
+export KBUILD=$DEBROOT/build/linux/
+export KERNELRELEASE=$(make kernelversion)
+export SRC_DIR=$DEBROOT/build/esp8089/
+
+cd $DEBROOT/build/esp8089
+make -j$(nproc)
+
+

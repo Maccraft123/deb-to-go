@@ -15,22 +15,29 @@ read -p "Are you sure $1 is correct device, press enter to continue"
 
 echo "Making rootfs..."
 # automated fdisk input: o n p 1 \n \n w, make one msdos part spanning entire drive
-printf "o\nn\np\n1\n\n\nw" | fdisk /dev/sdc
+printf "o\nn\np\n1\n\n\nw" | fdisk $1
 sleep 2
-/sbin/partx /dev/sdc
+/sbin/partx $1
 sleep 2
-mkfs.ext4 /dev/sdc1
+mkfs.ext4 ${1}1
 
-mount /dev/sdc1 /mnt
+mount ${1}1 /mnt
 debootstrap --arch=arm64 sid /mnt http://deb.debian.org/debian/
 echo odroidgo2 > /mnt/etc/hostname
 cp $(which qemu-aarch64-static) /mnt/
 chroot /mnt/ /qemu-aarch64-static /bin/passwd -d root
 
 
+export KVER=$(cd $DEBROOT/build/linux/; make kernelversion)
 echo "Installing kernel and devicetree..."
 cp $DEBROOT/build/linux/arch/arm64/boot/Image /mnt/Image
 cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dtb /mnt/odroidgo2.dtb
+make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
+mkdir -p "/mnt/usr/lib/modules/$KVER/kernel/drivers/net/wireless/"
+install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/usr/lib/modules/$KVER/kernel/drivers/net/wireless/esp8089.ko"
+chroot /mnt/ /qemu-aarch64-static /sbin/depmod $KVER
+chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager # good luck with wifi without networkmanager
+echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
 
 umount /mnt
 
