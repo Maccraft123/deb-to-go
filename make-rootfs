@@ -29,12 +29,13 @@ chroot /mnt/ /qemu-aarch64-static /bin/passwd -d root
 
 
 export KVER=$(cd $DEBROOT/build/linux/; make kernelversion)
+
 echo "Installing kernel and devicetree..."
 cp $DEBROOT/build/linux/arch/arm64/boot/Image /mnt/Image
 cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dtb /mnt/odroidgo2.dtb
 make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
-mkdir -p "/mnt/usr/lib/modules/$KVER/kernel/drivers/net/wireless/"
-install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/usr/lib/modules/$KVER/kernel/drivers/net/wireless/esp8089.ko"
+mkdir -p "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/" # TODO: dynamic
+install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/esp8089.ko"
 chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
 chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager # good luck with wifi without networkmanager
 echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
