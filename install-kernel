@@ -9,6 +9,8 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 [ -z "$1" ] && exit 1
+ls $1 || exit 1
+ls ${1}1 || exit 1
 
 mount ${1}1 /mnt
 

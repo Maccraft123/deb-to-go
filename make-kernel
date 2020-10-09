@@ -15,14 +15,26 @@ cd build
 rm -rf esp8089
 git clone https://github.com/al177/esp8089.git
 
+# download linux
 rm -rf linux
-mkdir -p linux
-curl -L https://$(curl -sL https://www.kernel.org | grep "Download complete tarball" | cut -d '.' -f 2- | cut -d '"' -f 1 | grep pub | head -n1) -o linux.tar.xz
+if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
+	date +'%V%y' > kernl-dl-date
+	mkdir -p linux
+	rm linux.tar.xz
+	curl -L https://$(curl -sL https://www.kernel.org | grep "Download complete tarball" | cut -d '.' -f 2- | cut -d '"' -f 1 | grep pub | head -n1) -o linux.tar.xz
+fi
+
 tar -xJf linux.tar.xz --strip-components=1 -C linux
+
+
+cd linux
+
+# patch linux
+wget https://gitlab.freedesktop.org/tomeu/linux/-/commit/025731eebd1cec6da60fa2e5851c2286b85c06e3.diff -O panfrost-fix.patch
+patch -p1 < panfrost-fix.patch
 
 # build
 
-cd linux
 cp $DEBROOT/res/linux-config ./.config
 make olddefconfig
 make -j$(nproc)
