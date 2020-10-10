@@ -22,7 +22,13 @@ sleep 2
 mkfs.ext4 ${1}1
 
 mount ${1}1 /mnt
-debootstrap --arch=arm64 sid /mnt http://deb.debian.org/debian/
+
+if [ -z "$SUITE" ]; then
+	debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/
+else
+	debootstrap --arch=arm64 $SUITE /mnt https://deb.debian.org/debian/
+fi
+
 echo odroidgo2 > /mnt/etc/hostname
 cp $(which qemu-aarch64-static) /mnt/
 chroot /mnt/ /qemu-aarch64-static /bin/passwd -d root
@@ -37,7 +43,8 @@ make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 #mkdir -p "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/" # TODO: dynamic
 #install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/esp8089.ko"
 chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
-chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager # good luck with wifi without networkmanager
+
+[ "$NETWORKMANAGER" = "Y" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager # good luck with wifi without networkmanager
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
 
 umount /mnt
