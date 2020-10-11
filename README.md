@@ -3,6 +3,8 @@ This is Debian build system for Odroid Go Advance featuring mainline Linux kerne
 
 You have to hold down "recovery" button in order to boot it, console is on internal UART header, 115200 baud rate
 
+Work-In-Progress, not intended for use without mouse and keyboard
+
 To build and install:
 ```
 ./make-all
