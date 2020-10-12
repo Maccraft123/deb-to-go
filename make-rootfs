@@ -46,6 +46,7 @@ chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
 
 [ "$NETWORKMANAGER" = "Y" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager # good luck with wifi without networkmanager
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
+[ -n "$ADDPKGS" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y $ADDPKGS
 
 umount /mnt
 
