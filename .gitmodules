@@ -1,0 +1,3 @@
+[submodule "armhf-tools"]
+	path = armhf-tools
+	url = https://github.com/Maccraft123/armhf-tools
