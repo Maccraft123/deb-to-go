@@ -29,9 +29,12 @@ tar -xJf linux.tar.xz --strip-components=1 -C linux
 
 cd linux
 
-# patch linux
+# patch linux, fixes aren't mine, obviously
 wget https://gitlab.freedesktop.org/tomeu/linux/-/commit/025731eebd1cec6da60fa2e5851c2286b85c06e3.diff -O panfrost-fix.patch
 patch -p1 < panfrost-fix.patch
+
+wget https://gitlab.freedesktop.org/tomeu/linux/-/commit/72ef7fe96fd20d3d0e538e165b393819f99870ad.diff -O panfrost-dts.patch
+patch -p1 < panfrost-dts.patch
 
 # build
 
