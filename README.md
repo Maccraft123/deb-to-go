@@ -7,6 +7,8 @@ Work-In-Progress, not intended for use without mouse and keyboard
 
 To build and install:
 ```
+git clone https://github.com/Maccraft123/deb-to-go.git --recursive -j2
+cd deb-to-go
 ./make-all
 sudo ./make-rootfs <target sd card, ex. /dev/sdb>
 ```
