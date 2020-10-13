@@ -20,7 +20,7 @@ rm -rf linux
 if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
 	date +'%V%y' > kernl-dl-date
 	mkdir -p linux
-	rm linux.tar.xz
+	rm linux.tar.xz || true
 	curl -L https://$(curl -sL https://www.kernel.org | grep "Download complete tarball" | cut -d '.' -f 2- | cut -d '"' -f 1 | grep pub | head -n1) -o linux.tar.xz
 fi
 

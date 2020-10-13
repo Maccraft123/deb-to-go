@@ -3,6 +3,8 @@
 TARGET=$1
 DEBROOT=$(pwd)
 
+set -e
+
 if [ "$(id -u)" != "0" ]; then
 	echo "You have to run this as root!"
 	exit 1
@@ -15,9 +17,9 @@ read -p "Are you sure $1 is correct device, press enter to continue"
 
 echo "Making rootfs..."
 # automated fdisk input: o n p 1 \n \n w, make one msdos part spanning entire drive
-printf "o\nn\np\n1\n\n\nw" | fdisk $1
+printf "o\nn\np\n1\n\n\nw" | fdisk $1 || true
 sleep 2
-/sbin/partx $1
+partx $1
 sleep 2
 mkfs.ext4 ${1}1
 
@@ -44,7 +46,9 @@ make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 #install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/esp8089.ko"
 chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
 
-[ "$NETWORKMANAGER" = "Y" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager # good luck with wifi without networkmanager
+if [ "$RETROARCH" = "Y" ]; then
+	$DEBROOT/install-mesa $1
+fi
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
 [ -n "$ADDPKGS" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y $ADDPKGS
 

@@ -4,7 +4,7 @@
 #
 
 #
-# Compiler: aarch64-linux-gnu-gcc (GCC) 10.2.0
+# Compiler: aarch64-linux-gnu-gcc (Debian 10.2.0-9) 10.2.0
 #
 CONFIG_CREATE_ARCH_SYMLINK=y
 # CONFIG_ARC is not set
@@ -287,6 +287,16 @@ CONFIG_PLATFORM_ELFENTRY="_start"
 CONFIG_STACK_SIZE=0x1000000
 CONFIG_SYS_SRAM_BASE=0x0
 CONFIG_SYS_SRAM_SIZE=0x0
+# CONFIG_EXAMPLES is not set
+
+#
+# API
+#
+# CONFIG_API is not set
+
+#
+# Boot options
+#
 
 #
 # Boot images
@@ -313,17 +323,13 @@ CONFIG_SPL_FIT_SOURCE=""
 CONFIG_USE_SPL_FIT_GENERATOR=y
 CONFIG_SPL_FIT_GENERATOR="arch/arm/mach-rockchip/make_fit_atf.py"
 CONFIG_LEGACY_IMAGE_FORMAT=y
+CONFIG_SUPPORT_RAW_INITRD=y
 # CONFIG_OF_BOARD_SETUP is not set
 # CONFIG_OF_SYSTEM_SETUP is not set
 # CONFIG_OF_STDOUT_VIA_ALIAS is not set
 CONFIG_SYS_EXTRA_OPTIONS=""
 CONFIG_HAVE_SYS_TEXT_BASE=y
 CONFIG_ARCH_FIXUP_FDT_MEMORY=y
-
-#
-# API
-#
-# CONFIG_API is not set
 
 #
 # Boot timing
@@ -344,10 +350,18 @@ CONFIG_BOOTSTAGE_STASH_SIZE=0x1000
 # CONFIG_SATA_BOOT is not set
 # CONFIG_SD_BOOT is not set
 # CONFIG_SPI_BOOT is not set
+
+#
+# Autoboot options
+#
+CONFIG_AUTOBOOT=y
 CONFIG_BOOTDELAY=2
+# CONFIG_AUTOBOOT_KEYED is not set
+# CONFIG_AUTOBOOT_USE_MENUKEY is not set
 # CONFIG_USE_BOOTARGS is not set
 CONFIG_USE_BOOTCOMMAND=y
 # CONFIG_USE_PREBOOT is not set
+CONFIG_DEFAULT_FDT_FILE="rk3326-odroidgo2.dtb"
 
 #
 # Console
@@ -373,16 +387,14 @@ CONFIG_TPL_LOGLEVEL=4
 # Logging
 #
 # CONFIG_LOG is not set
-CONFIG_SUPPORT_RAW_INITRD=y
-CONFIG_DEFAULT_FDT_FILE="rk3326-odroidgo2.dtb"
-CONFIG_MISC_INIT_R=y
-# CONFIG_VERSION_VARIABLE is not set
-# CONFIG_BOARD_LATE_INIT is not set
+
+#
+# Init options
+#
+# CONFIG_BOARD_TYPES is not set
 # CONFIG_DISPLAY_CPUINFO is not set
 CONFIG_DISPLAY_BOARDINFO=y
 CONFIG_DISPLAY_BOARDINFO_LATE=y
-CONFIG_BOUNCE_BUFFER=y
-# CONFIG_BOARD_TYPES is not set
 
 #
 # Start-up hooks
@@ -391,7 +403,9 @@ CONFIG_BOUNCE_BUFFER=y
 # CONFIG_ARCH_MISC_INIT is not set
 # CONFIG_BOARD_EARLY_INIT_F is not set
 # CONFIG_BOARD_EARLY_INIT_R is not set
+# CONFIG_BOARD_LATE_INIT is not set
 # CONFIG_LAST_STAGE_INIT is not set
+CONFIG_MISC_INIT_R=y
 
 #
 # Security support
@@ -532,13 +546,6 @@ CONFIG_SYS_PROMPT="=> "
 CONFIG_SYS_XTRACE="y"
 
 #
-# Autoboot options
-#
-CONFIG_AUTOBOOT=y
-# CONFIG_AUTOBOOT_KEYED is not set
-# CONFIG_AUTOBOOT_USE_MENUKEY is not set
-
-#
 # Commands
 #
 
@@ -601,6 +608,7 @@ CONFIG_CMD_ENV_EXISTS=y
 # Memory commands
 #
 # CONFIG_CMD_BINOP is not set
+# CONFIG_CMD_BLOBLIST is not set
 CONFIG_CMD_CRC32=y
 # CONFIG_CRC32_VERIFY is not set
 # CONFIG_CMD_EEPROM is not set
@@ -825,7 +833,6 @@ CONFIG_OF_LIST="rk3326-odroid-go2"
 CONFIG_OF_SPL_REMOVE_PROPS="pinctrl-0 pinctrl-names interrupt-parent assigned-clocks assigned-clock-rates assigned-clock-parents"
 # CONFIG_OF_DTB_PROPS_REMOVE is not set
 # CONFIG_SPL_OF_PLATDATA is not set
-CONFIG_MKIMAGE_DTC_PATH="dtc"
 
 #
 # Environment
@@ -854,6 +861,7 @@ CONFIG_DEFAULT_ENV_FILE="uboot-env"
 # CONFIG_ENV_APPEND is not set
 # CONFIG_ENV_WRITEABLE_LIST is not set
 # CONFIG_ENV_ACCESS_IGNORE_FORCE is not set
+# CONFIG_VERSION_VARIABLE is not set
 CONFIG_NET=y
 # CONFIG_PROT_UDP is not set
 # CONFIG_BOOTP_SEND_HOSTNAME is not set
@@ -891,6 +899,7 @@ CONFIG_OF_TRANSLATE=y
 # CONFIG_SPL_OF_TRANSLATE is not set
 # CONFIG_TRANSLATION_OFFSET is not set
 # CONFIG_ACPIGEN is not set
+CONFIG_BOUNCE_BUFFER=y
 CONFIG_ADC=y
 # CONFIG_ADC_EXYNOS is not set
 # CONFIG_ADC_SANDBOX is not set
@@ -1319,6 +1328,7 @@ CONFIG_SPL_PINCONF_RECURSIVE=y
 # CONFIG_PINCTRL_STM32 is not set
 # CONFIG_PINCTRL_STMFX is not set
 # CONFIG_SPL_PINCTRL_STMFX is not set
+# CONFIG_PINCTRL_K210 is not set
 CONFIG_PINCTRL_ROCKCHIP=y
 CONFIG_SPL_PINCTRL_ROCKCHIP=y
 
@@ -1382,6 +1392,7 @@ CONFIG_REGULATOR_RK8XX=y
 CONFIG_DM_PWM=y
 # CONFIG_PWM_EXYNOS is not set
 # CONFIG_PWM_IMX is not set
+# CONFIG_PWM_MESON is not set
 # CONFIG_PWM_MTK is not set
 CONFIG_PWM_ROCKCHIP=y
 # CONFIG_PWM_SANDBOX is not set
@@ -1830,3 +1841,8 @@ CONFIG_OPTEE_TZDRAM_BASE=0x00000000
 # CONFIG_BOOTM_OPTEE is not set
 # CONFIG_TEST_FDTDEC is not set
 # CONFIG_UNIT_TEST is not set
+
+#
+# Tools options
+#
+CONFIG_MKIMAGE_DTC_PATH="dtc"
