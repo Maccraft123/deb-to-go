@@ -5,6 +5,11 @@ You have to hold down "recovery" button in order to boot it, console is on inter
 
 Work-In-Progress, not intended for use without mouse and keyboard
 
+UI options include:
+- Retroarch(WIP)
+- Kodi(TODO, needs http://www.deb-multimedia.org/)
+- Plasma Bigscreen UI(TODO?)
+
 To build and install:
 ```
 git clone https://github.com/Maccraft123/deb-to-go.git --recursive -j2
