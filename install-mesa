@@ -1,9 +1,0 @@
-#!/bin/bash
-set -e
-DEBROOT=$1
-chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager
-echo "Building and installing mesa..."
-cd $DEBROOT/armhf-tools
-env DESTDIR=/mnt/ CROSS=aarch64-linux-gnu ./build-mesa
-env DESTDIR=/mnt/ CROSS=aarch64-linux-gnu ./install-mesa
-
