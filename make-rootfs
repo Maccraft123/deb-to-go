@@ -46,7 +46,7 @@ make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 #install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/esp8089.ko"
 chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
 
-#if [ "$RETROARCH" = "Y" ]; then
+if [ "$RETROARCH" = "Y" ]; then
 	$DEBROOT/make-mesa
 	chroot /mnt/ /qemu-aarch64-static /usr/sbin/useradd -c "GO2" -m user -G video,audio,render,input -s /bin/bash
 	mkdir -p /mnt/etc/systemd/system/getty@tty1.service.d/
@@ -54,7 +54,7 @@ chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
 ExecStart=
 ExecStart=-/usr/sbin/agetty --autologin user --noclear %%I $TERM
 	' > /mnt/etc/systemd/system/getty@tty1.service.d/override.conf
-#fi
+fi
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
 [ -n "$ADDPKGS" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y $ADDPKGS
 
