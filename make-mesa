@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager kmscube
+chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager kmscube build-essential git
 echo "Building and installing mesa..."
 rm -rf $DEBROOT/armhf-tools
 git clone https://github.com/Maccraft123/armhf-tools.git -j4 $DEBROOT/armhf-tools

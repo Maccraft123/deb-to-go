@@ -4,6 +4,7 @@ TARGET=$1
 DEBROOT=$(pwd)
 
 set -e
+set -v
 
 if [ "$(id -u)" != "0" ]; then
 	echo "You have to run this as root!"
@@ -13,6 +14,12 @@ fi
 [ -z "$1" ] && exit 1
 
 read -p "Are you sure $1 is correct device, press enter to continue"
+sleep 1
+
+if echo $PATH | grep -E '^/sbin|:/sbin'; then echo -n ''; else
+	echo "/sbin not in \$PATH"
+	exit 1
+fi
 
 
 echo "Making rootfs..."
@@ -21,18 +28,19 @@ printf "o\nn\np\n1\n\n\nw" | fdisk $1 || true
 sleep 2
 partx $1
 sleep 2
-mkfs.ext4 ${1}1
+mkfs.ext4 -F ${1}1
 
 mount ${1}1 /mnt
 
+cp $(which qemu-aarch64-static) /mnt/
+
 if [ -z "$SUITE" ]; then
-	debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/
+	qemu-debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/ || true
 else
-	debootstrap --arch=arm64 $SUITE /mnt https://deb.debian.org/debian/
+	qemu-debootstrap --arch=arm64 $SUITE /mnt https://deb.debian.org/debian/
 fi
 
 echo odroidgo2 > /mnt/etc/hostname
-cp $(which qemu-aarch64-static) /mnt/
 chroot /mnt/ /qemu-aarch64-static /bin/passwd -d root
 
 
@@ -46,7 +54,7 @@ make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 #install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/esp8089.ko"
 chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
 
-if [ "$RETROARCH" = "Y" ]; then
+if [ -n "$UI" ]; then
 	$DEBROOT/make-mesa
 	chroot /mnt/ /qemu-aarch64-static /usr/sbin/useradd -c "GO2" -m user -G video,audio,render,input -s /bin/bash
 	mkdir -p /mnt/etc/systemd/system/getty@tty1.service.d/
@@ -54,6 +62,14 @@ if [ "$RETROARCH" = "Y" ]; then
 ExecStart=
 ExecStart=-/usr/sbin/agetty --autologin user --noclear %%I $TERM
 	' > /mnt/etc/systemd/system/getty@tty1.service.d/override.conf
+	chroot /mnt/ /qemu-aarch64-static /bin/apt install -y sway
+	echo 'export WLR_LIBINPUT_NO_DEVICES=1' >> /mnt/home/user/.bashrc
+	echo 'tty | grep tty1 && exec sway' >> /mnt/home/user/.bashrc
+	if [ "$UI" = "retroarch" ]; then
+		chroot /mnt/ /qemu-aarch64-static /bin/apt install -y retroarch xwayland
+		cp $DEDBROOT/res/retroarch.cfg /mnt/etc/retroarch.cfg
+		printf 'output DSI-1 transform 270\nexec retroarch\n' > /mnt/etc/sway/config
+	fi
 fi
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
 [ -n "$ADDPKGS" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y $ADDPKGS
