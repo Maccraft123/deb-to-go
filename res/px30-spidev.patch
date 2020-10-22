@@ -1,5 +1,5 @@
---- a/linux/arch/arm64/boot/dts/rockchip/px30.dtsi	2020-10-22 19:48:35.896381534 +0000
-+++ b/linux/arch/arm64/boot/dts/rockchip/px30.dtsi	2020-10-22 18:08:06.401464234 +0000
+--- a/arch/arm64/boot/dts/rockchip/px30.dtsi	2020-10-22 19:48:35.896381534 +0000
++++ b/arch/arm64/boot/dts/rockchip/px30.dtsi	2020-10-22 18:08:06.401464234 +0000
 @@ -599,6 +599,26 @@
  		status = "disabled";
  	};
