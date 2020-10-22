@@ -1,4 +1,4 @@
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts-save	2020-10-22 19:48:18.020553858 +0000
+--- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts	2020-10-22 19:48:18.020553858 +0000
 +++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts	2020-10-22 19:43:50.296457206 +0000
 @@ -243,7 +243,6 @@
  		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_LOW>;
