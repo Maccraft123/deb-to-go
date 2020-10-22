@@ -1,0 +1,10 @@
+--- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts-save	2020-10-22 19:48:18.020553858 +0000
++++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts	2020-10-22 19:43:50.296457206 +0000
+@@ -243,7 +243,6 @@
+ 		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_LOW>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pmic_int>;
+-		rockchip,system-power-controller;
+ 		wakeup-source;
+ 		#clock-cells = <1>;
+ 		clock-output-names = "rk808-clkout1", "xin32k";

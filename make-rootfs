@@ -74,9 +74,13 @@ fi
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
 [ -n "$ADDPKGS" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y $ADDPKGS
 
-umount /mnt
-
 echo "Installing Das U-Boot..."
+
+cp $DEBROOT/build/uboot/idbloader.img $DEBROOT/build/uboot/u-boot.itb /mnt/
+
+echo "To flash U-Boot to internal spi, refer to XXX"
+
+umount /mnt
 
 cd build
 cd uboot
