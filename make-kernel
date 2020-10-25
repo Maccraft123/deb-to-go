@@ -36,7 +36,9 @@ patch -p1 < panfrost-fix.patch
 wget https://gitlab.freedesktop.org/tomeu/linux/-/commit/72ef7fe96fd20d3d0e538e165b393819f99870ad.diff -O panfrost-dts.patch
 patch -p1 < panfrost-dts.patch
 
-#patch -p1 < $DEBROOT/res/spi-gpio.patch
+# moar patches
+patch -p1 < $DEBROOT/res/px30-spidev.patch
+patch -p1 < $DEBROOT/res/odroid-go2-psci-poweroff.patch
 
 # build
 
