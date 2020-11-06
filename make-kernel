@@ -29,12 +29,9 @@ tar -xJf linux.tar.xz --strip-components=1 -C linux
 
 cd linux
 
-# patch linux, fixes aren't mine, obviously
-wget https://gitlab.freedesktop.org/tomeu/linux/-/commit/025731eebd1cec6da60fa2e5851c2286b85c06e3.diff -O panfrost-fix.patch
-patch -p1 < panfrost-fix.patch
-
-wget https://gitlab.freedesktop.org/tomeu/linux/-/commit/72ef7fe96fd20d3d0e538e165b393819f99870ad.diff -O panfrost-dts.patch
-patch -p1 < panfrost-dts.patch
+# adc-joystick dt binding, https://lkml.org/lkml/2020/7/3/886
+wget https://lore.kernel.org/patchwork/patch/1267742/raw/ -O arm64-dts-rockchip-add-adc-joystick-to-Odroid-Go-Advance.diff
+patch -p1 < arm64-dts-rockchip-add-adc-joystick-to-Odroid-Go-Advance.diff
 
 # moar patches
 patch -p1 < $DEBROOT/res/px30-spidev.patch
@@ -51,6 +48,6 @@ export KERNELRELEASE=$(make kernelversion)
 export SRC_DIR=$DEBROOT/build/esp8089/
 
 cd $DEBROOT/build/esp8089
-#make -j$(nproc)
+#make -j$(nproc) # yes i am doing everything to not fix esp8089
 
 
