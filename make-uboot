@@ -15,6 +15,7 @@ cd build
 rm -rf uboot
 rm -rf arm-trusted-firmware
 
+unset BL31 # arm trusted firmware build fails when this is set
 cd $DEBROOT/build
 git clone https://github.com/ARM-software/arm-trusted-firmware.git
 cd arm-trusted-firmware

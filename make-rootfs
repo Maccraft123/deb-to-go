@@ -41,7 +41,7 @@ else
 fi
 
 echo odroidgo2 > /mnt/etc/hostname
-chroot /mnt/ /qemu-aarch64-static /bin/passwd -d root
+chroot /mnt/ /bin/passwd -d root
 
 
 export KVER=$(cd $DEBROOT/build/linux/; make kernelversion)
@@ -52,27 +52,27 @@ cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dtb /mnt/
 make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 #mkdir -p "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/" # TODO: dynamic
 #install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/esp8089.ko"
-chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
+chroot /mnt/ /sbin/depmod -a $KVER
 
 if [ -n "$UI" ]; then
 	$DEBROOT/make-mesa
-	chroot /mnt/ /qemu-aarch64-static /usr/sbin/useradd -c "GO2" -m user -G video,audio,render,input -s /bin/bash
+	chroot /mnt/ /usr/sbin/useradd -c "GO2" -m user -G video,audio,render,input -s /bin/bash
 	mkdir -p /mnt/etc/systemd/system/getty@tty1.service.d/
 	printf '[Service]
 ExecStart=
 ExecStart=-/usr/sbin/agetty --autologin user --noclear %%I $TERM
 	' > /mnt/etc/systemd/system/getty@tty1.service.d/override.conf
-	chroot /mnt/ /qemu-aarch64-static /bin/apt install -y sway
+	chroot /mnt/ /bin/apt install -y sway xwayland
 	echo 'export WLR_LIBINPUT_NO_DEVICES=1' >> /mnt/home/user/.bashrc
 	echo 'tty | grep tty1 && exec sway' >> /mnt/home/user/.bashrc
 	if [ "$UI" = "retroarch" ]; then
-		chroot /mnt/ /qemu-aarch64-static /bin/apt install -y retroarch xwayland
+		chroot /mnt/ /bin/apt install -y retroarch
 		#cp $DEBROOT/res/retroarch.cfg /mnt/etc/retroarch.cfg
 		printf 'output DSI-1 transform 270\nexec retroarch\n' > /mnt/etc/sway/config
 	fi
 fi
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
-[ -n "$ADDPKGS" ] && chroot /mnt/ /qemu-aarch64-static /bin/apt install -y $ADDPKGS
+[ -n "$ADDPKGS" ] && chroot /mnt/ /bin/apt install -y $ADDPKGS
 
 echo "Installing Das U-Boot..."
 

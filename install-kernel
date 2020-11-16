@@ -22,11 +22,10 @@ cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dtb /mnt/
 
 make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 
-#mkdir -p "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/" # TODO: dynamic
-#install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/esp8089.ko"
+#install -m 0644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/$KVER/kernel/drivers/net/wireless/esp8089.ko"
 
-chroot /mnt/ /qemu-aarch64-static /sbin/depmod -a $KVER
-#echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
+chroot /mnt/ /sbin/depmod -a $KVER
+#echo "options esp8089 esp_reset_gpio=105" > /mnt/etc/modprobe.d/esp.conf
 
 umount /mnt
 

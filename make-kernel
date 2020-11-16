@@ -13,19 +13,29 @@ cd build
 
 # let's have a clean tree
 rm -rf esp8089
-git clone https://github.com/al177/esp8089.git
+git clone https://github.com/Maccraft123/esp8089.git
 
 # download linux
 rm -rf linux
-if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
-	date +'%V%y' > kernl-dl-date
-	mkdir -p linux
-	rm linux.tar.xz || true
-	curl -L https://$(curl -sL https://www.kernel.org | grep "Download complete tarball" | cut -d '.' -f 2- | cut -d '"' -f 1 | grep pub | head -n1) -o linux.tar.xz
+
+if [ "$LINUX" = "master" ]; then
+	git clone https://github.com/torvalds/linux.git
+else
+	if [ "$(date +'%V%y')" != "$(cat kern-dl-date)" ]; then
+		date +'%V%y' > kernl-dl-date
+		mkdir -p linux
+		rm Linux-archive || true
+		#curl -L https://$(curl -sL https://www.kernel.org | grep "Download complete tarball" | cut -d '.' -f 2- | cut -d '"' -f 1 | grep pub | head -n1) -o linux.tar.xz
+		# it is uppercase to not mess with tab completion after 'l
+		if [ -z "$LINUX" ]; then
+			curl -L "$(curl -sL https://www.kernel.org/ | grep "Download complete tarball" | head -n1 | tr '"' ' ' | awk '{print $3}')" -o Linux-archive
+		else
+			curl -L "https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-$LINUX.tar.xz" -o Linux-archive
+		fi
+	fi
+
+	bsdtar xf Linux-archive --strip-components=1 -C linux
 fi
-
-tar -xJf linux.tar.xz --strip-components=1 -C linux
-
 
 cd linux
 
@@ -35,7 +45,10 @@ patch -p1 < arm64-dts-rockchip-add-adc-joystick-to-Odroid-Go-Advance.diff
 
 # moar patches
 patch -p1 < $DEBROOT/res/px30-spidev.patch
-patch -p1 < $DEBROOT/res/odroid-go2-psci-poweroff.patch
+patch -p1 < $DEBROOT/res/odroid-go2-psci-poweroff.patch # mainlining in progress...
+
+# regression, for now revert https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-rolling-stable&id=d84978ad61367d269befe972790d898fba7ed594
+patch -R -p1 < $DEBROOT/res/add-support-for-non-continuous-HS-clock.patch
 
 # build
 
@@ -48,6 +61,4 @@ export KERNELRELEASE=$(make kernelversion)
 export SRC_DIR=$DEBROOT/build/esp8089/
 
 cd $DEBROOT/build/esp8089
-#make -j$(nproc) # yes i am doing everything to not fix esp8089
-
-
+#make -j$(nproc)
