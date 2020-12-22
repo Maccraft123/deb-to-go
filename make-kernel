@@ -11,9 +11,9 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 mkdir -p build
 cd build
 
-# let's have a clean tree
-rm -rf esp8089
-git clone https://github.com/Maccraft123/esp8089.git
+# let's have a clean esp8089 tree
+#rm -rf esp8089
+#git clone https://github.com/Maccraft123/esp8089.git
 
 # download linux
 rm -rf linux
@@ -34,18 +34,18 @@ else
 		fi
 	fi
 
+	# yes that should be uppercase to not mess with tab completion
 	bsdtar xf Linux-archive --strip-components=1 -C linux
 fi
 
 cd linux
 
 # adc-joystick dt binding, https://lkml.org/lkml/2020/7/3/886
-wget https://lore.kernel.org/patchwork/patch/1267742/raw/ -O arm64-dts-rockchip-add-adc-joystick-to-Odroid-Go-Advance.diff
-patch -p1 < arm64-dts-rockchip-add-adc-joystick-to-Odroid-Go-Advance.diff
+#wget https://lore.kernel.org/patchwork/patch/1267742/raw/ -O arm64-dts-rockchip-add-adc-joystick-to-Odroid-Go-Advance.diff
+#patch -p1 < arm64-dts-rockchip-add-adc-joystick-to-Odroid-Go-Advance.diff
 
 # moar patches
 patch -p1 < $DEBROOT/res/px30-spidev.patch
-patch -p1 < $DEBROOT/res/odroid-go2-psci-poweroff.patch # mainlining in progress...
 
 # regression, for now revert https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-rolling-stable&id=d84978ad61367d269befe972790d898fba7ed594
 patch -R -p1 < $DEBROOT/res/add-support-for-non-continuous-HS-clock.patch
@@ -53,9 +53,10 @@ patch -R -p1 < $DEBROOT/res/add-support-for-non-continuous-HS-clock.patch
 # build
 
 cp $DEBROOT/res/linux-config ./.config
-make olddefconfig
+make oldconfig
 make -j$(nproc)
 
+# esp8089 env vars
 export KBUILD=$DEBROOT/build/linux/
 export KERNELRELEASE=$(make kernelversion)
 export SRC_DIR=$DEBROOT/build/esp8089/

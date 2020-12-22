@@ -11,4 +11,4 @@ export CROSS_COMPILE=aarch64-linux-gnu-
 cd build/linux
 
 make nconfig
-make -j5
+make -j$(nproc)

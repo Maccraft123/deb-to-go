@@ -1,10 +1,15 @@
 #!/bin/bash
 set -e
+# instal dependencies on deb-to-go rootfs
 chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager kmscube build-essential git
+
 echo "Building and installing mesa..."
+
+# clean up the tree, why not?
 rm -rf $DEBROOT/armhf-tools
 git clone https://github.com/Maccraft123/armhf-tools.git -j4 $DEBROOT/armhf-tools
 cd $DEBROOT/armhf-tools
+
 env DESTDIR=/mnt/ CROSS=aarch64-linux-gnu ./build-mesa
 env TRIPLET=aarch64-linux-gnu DESTDIR=/mnt/ CROSS=aarch64-linux-gnu ./install-mesa
 

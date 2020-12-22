@@ -35,9 +35,9 @@ mount ${1}1 /mnt
 cp $(which qemu-aarch64-static) /mnt/
 
 if [ -z "$SUITE" ]; then
-	qemu-debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/ || true
+	qemu-debootstrap --arch=arm64 sid /mnt https://deb.debian.org/debian/ || true # qemu-debootstrap sometimes returns 1, TODO: figure out why?
 else
-	qemu-debootstrap --arch=arm64 $SUITE /mnt https://deb.debian.org/debian/
+	qemu-debootstrap --arch=arm64 $SUITE /mnt https://deb.debian.org/debian/ || true
 fi
 
 echo odroidgo2 > /mnt/etc/hostname
@@ -50,27 +50,37 @@ echo "Installing kernel and devicetree..."
 cp $DEBROOT/build/linux/arch/arm64/boot/Image /mnt/Image
 cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dtb /mnt/odroidgo2.dtb
 make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
-#mkdir -p "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/" # TODO: dynamic
+#mkdir -p "/mnt/lib/modules/$KVER/kernel/drivers/net/wireless/"
 #install -Dm644 $DEBROOT/build/esp8089/esp8089.ko "/mnt/lib/modules/5.8.13/kernel/drivers/net/wireless/esp8089.ko"
 chroot /mnt/ /sbin/depmod -a $KVER
 
 if [ -n "$UI" ]; then
 	$DEBROOT/make-mesa
+	# add user
 	chroot /mnt/ /usr/sbin/useradd -c "GO2" -m user -G video,audio,render,input -s /bin/bash
+
+	# autologin user
 	mkdir -p /mnt/etc/systemd/system/getty@tty1.service.d/
 	printf '[Service]
 ExecStart=
 ExecStart=-/usr/sbin/agetty --autologin user --noclear %%I $TERM
 	' > /mnt/etc/systemd/system/getty@tty1.service.d/override.conf
+
+	# install sway and xwayland because for now sway has best performance on panfrost
 	chroot /mnt/ /bin/apt install -y sway xwayland
+
+	# make sway not return 1 without mouse and keyboard
 	echo 'export WLR_LIBINPUT_NO_DEVICES=1' >> /mnt/home/user/.bashrc
-	echo 'tty | grep tty1 && exec sway' >> /mnt/home/user/.bashrc
+
+	# autorun sway
+	echo 'tty | grep tty1 && exec sway' >> /mnt/home/user/.bashrc 
 	if [ "$UI" = "retroarch" ]; then
 		chroot /mnt/ /bin/apt install -y retroarch
 		#cp $DEBROOT/res/retroarch.cfg /mnt/etc/retroarch.cfg
-		printf 'output DSI-1 transform 270\nexec retroarch\n' > /mnt/etc/sway/config
 	fi
+	printf 'output DSI-1 transform 270\nexec $UI\n' > /mnt/etc/sway/config
 fi
+
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
 [ -n "$ADDPKGS" ] && chroot /mnt/ /bin/apt install -y $ADDPKGS
 
@@ -78,13 +88,12 @@ echo "Installing Das U-Boot..."
 
 cp $DEBROOT/build/uboot/idbloader.img $DEBROOT/build/uboot/u-boot.itb /mnt/
 
-echo "To flash U-Boot to internal spi, refer to XXX"
-
 umount /mnt
 
 cd build
 cd uboot
 
+# can't use u-boot-rockchip
 dd if=idbloader.img of=$1 bs=512 seek=64 status=none
 dd if=u-boot.itb of=$1 bs=512 seek=512 status=none
 sync

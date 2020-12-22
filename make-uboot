@@ -29,5 +29,5 @@ cd $DEBROOT/build
 git clone https://github.com/u-boot/u-boot.git uboot
 cd uboot
 cp $DEBROOT/res/uboot-config ./.config
-cp $DEBROOT/res/uboot-env ./
+cp $DEBROOT/res/uboot-env ./ # env has to be hardcoded
 make -j$(nproc)
