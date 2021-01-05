@@ -55,7 +55,7 @@ make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 chroot /mnt/ /sbin/depmod -a $KVER
 
 if [ -n "$UI" ]; then
-	$DEBROOT/make-mesa
+	$DEBROOT/make-mesa $DEBROOT
 	# add user
 	chroot /mnt/ /usr/sbin/useradd -c "GO2" -m user -G video,audio,render,input -s /bin/bash
 

@@ -1,4 +1,6 @@
 #!/bin/bash
+DEBROOT=$1
+
 set -e
 # instal dependencies on deb-to-go rootfs
 chroot /mnt/ /qemu-aarch64-static /bin/apt install -y network-manager kmscube build-essential git

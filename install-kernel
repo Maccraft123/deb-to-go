@@ -28,5 +28,6 @@ chroot /mnt/ /sbin/depmod -a $KVER
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/etc/modprobe.d/esp.conf
 
 umount /mnt
+sync
 
 echo 'Done!'
