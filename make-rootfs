@@ -71,11 +71,14 @@ ExecStart=-/usr/sbin/agetty --autologin user --noclear %%I $TERM
 
 	# autorun sway
 	echo 'tty | grep tty1 && exec sway' >> /mnt/home/user/.bashrc 
-	if [ "$UI" = "retroarch" ]; then
-		chroot /mnt/ /bin/apt install -y retroarch
-		#cp $DEBROOT/res/retroarch.cfg /mnt/etc/retroarch.cfg
-	fi
-	printf 'output DSI-1 transform 270\nexec $UI\n' > /mnt/etc/sway/config
+
+	chroot /mnt/ /bin/apt install -y retroarch
+	cp $DEBROOT/res/retroarch.cfg /mnt/etc/retroarch.cfg
+
+	mkdir -p /mnt/etc/sway/
+	cp $DEBROOT/res/sway-config /mnt/etc/sway/config
+
+	cp $DEBROOT/res/i3status.conf /mnt/etc/
 fi
 
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
