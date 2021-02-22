@@ -1,0 +1,30 @@
+output DSI-1 transform 270
+exec xfce4-terminal
+
+default_border none
+
+set $mod Mod4
+
+bindsym --release XF86AudioPreset exec amixer -c 0 set 'Playback Path' HP
+bindsym XF86AudioPreset exec amixer -c 0 set 'Playback Path' SPK
+
+bindsym $mod+XF86AudioRaiseVolume exec brightnessctl s 5%+
+bindsym $mod+XF86AudioLowerVolume exec brightnessctl s 5%-
+
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+
+font pango:Monospace 9
+
+bar 0 {
+	mode hide
+	position bottom
+	status_command i3status
+	colors {
+		statusline #ffffff
+		background #000000
+		focused_workspace  #000000 #000000 #000000
+		inactive_workspace #000000 #000000 #000000
+		active_workspace   #000000 #000000 #000000
+	}
+}
