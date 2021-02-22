@@ -26,7 +26,7 @@ export BL31=$DEBROOT/build/arm-trusted-firmware/build/px30/debug/bl31/bl31.elf
 export ARCH=arm
 
 cd $DEBROOT/build
-git clone https://github.com/u-boot/u-boot.git uboot
+git clone https://github.com/Maccraft123/u-boot.git uboot
 cd uboot
 cp $DEBROOT/res/uboot-config ./.config
 cp $DEBROOT/res/uboot-env ./ # env has to be hardcoded
