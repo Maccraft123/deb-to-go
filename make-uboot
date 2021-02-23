@@ -19,10 +19,10 @@ unset BL31 # arm trusted firmware build fails when this is set
 cd $DEBROOT/build
 git clone https://github.com/ARM-software/arm-trusted-firmware.git
 cd arm-trusted-firmware
-make PLAT=px30 DEBUG=1 bl31 -j$(nproc)
+make PLAT=px30 DEBUG=0 bl31 -j$(nproc)
 
 
-export BL31=$DEBROOT/build/arm-trusted-firmware/build/px30/debug/bl31/bl31.elf
+export BL31=$DEBROOT/build/arm-trusted-firmware/build/px30/release/bl31/bl31.elf
 export ARCH=arm
 
 cd $DEBROOT/build
