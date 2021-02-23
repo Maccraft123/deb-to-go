@@ -47,8 +47,11 @@ chroot /mnt/ /bin/passwd -d root
 export KVER=$(cd $DEBROOT/build/linux/; make kernelversion)
 
 echo "Installing kernel and devicetree..."
-cp $DEBROOT/build/linux/arch/arm64/boot/Image /mnt/Image
-cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dtb /mnt/odroidgo2.dtb
+mkdir /mnt/boot
+cp $DEBROOT/build/linux/arch/arm64/boot/Image /mnt/boot/Image
+cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dtb /mnt/boot/rk3326-odroid-go2.dtb
+cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip//boot/rk3326-odroidgo2-v11.dtb /mnt/boot/boot/rk3326-odroid-go2-v11.dtb
+cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go3.dtb /mnt/boot/rk3326-odroid-go3.dtb
 make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 
 if [ -n "$UI" ]; then
