@@ -40,17 +40,17 @@ else
 	qemu-debootstrap --arch=arm64 $SUITE /mnt https://deb.debian.org/debian/ || true
 fi
 
-echo odroidgo2 > /mnt/etc/hostname
+echo 'deb-to-go' > /mnt/etc/hostname
 chroot /mnt/ /bin/passwd -d root
 
 
 export KVER=$(cd $DEBROOT/build/linux/; make kernelversion)
 
 echo "Installing kernel and devicetree..."
-mkdir /mnt/boot
+mkdir -p /mnt/boot
 cp $DEBROOT/build/linux/arch/arm64/boot/Image /mnt/boot/Image
 cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dtb /mnt/boot/rk3326-odroid-go2.dtb
-cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip//boot/rk3326-odroidgo2-v11.dtb /mnt/boot/boot/rk3326-odroid-go2-v11.dtb
+cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip//boot/rk3326-odroid-go2-v11.dtb /mnt/boot/boot/rk3326-odroid-go2-v11.dtb
 cp $DEBROOT/build/linux/arch/arm64/boot/dts/rockchip/rk3326-odroid-go3.dtb /mnt/boot/rk3326-odroid-go3.dtb
 make -C $DEBROOT/build/linux ARCH=arm64 INSTALL_MOD_PATH=/mnt/ modules_install
 
@@ -82,6 +82,11 @@ ExecStart=-/usr/sbin/agetty --autologin user --noclear %%I $TERM
 	cp $DEBROOT/res/sway-config /mnt/etc/sway/config
 
 	cp $DEBROOT/res/i3status.conf /mnt/etc/
+
+
+	git clone https://github.com/Maccraft123/dtg-launcher.git /mnt/dtg-launcher
+	make -C /mnt/dtg-launcher # cross-compile is baked into makefile
+	make -C /mnt/dtg-launcher install
 fi
 
 #echo "options esp8089 esp_reset_gpio=105" > /mnt/modprobe.d/esp.conf
