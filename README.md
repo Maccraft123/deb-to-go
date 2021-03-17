@@ -1,4 +1,6 @@
 # Deb-To-Go
+# Deprecated in favor of DTG-NG.
+# https://github.com/Maccraft123/dtg-ng
 This is Debian build system for Odroid Go Advance featuring mainline Linux kernel
 
 You have to hold down "recovery" button in order to boot it, console is on internal UART header, 115200 baud rate
